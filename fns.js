@@ -16,9 +16,9 @@ module.exports = {
     },
     type: function(obj) {
         if (obj === null) return 'null'
-        else if (obj === undef) return 'undefined'
-        var m = /\[object (\w+)\]/.exec(Object.prototype.toString.call(obj))
-        return m ? m[1].toLowerCase() : ''
+        else if (obj === undef) return 'undefined';
+        var m = /\[object (\w+)\]/.exec(Object.prototype.toString.call(obj));
+        return m ? m[1].toLowerCase() : '';
     },
     keys: function (obj) {
         var keys = []
