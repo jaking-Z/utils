@@ -1,11 +1,12 @@
 'use strict'
 
 var undef = void(0)
-function hasOwn (obj, prop) {
+
+function hasOwn(obj, prop) {
     return obj && obj.hasOwnProperty && obj.hasOwnProperty(prop)
 }
 module.exports = {
-    escape: function (markup) {
+    escape: function(markup) {
         if (!markup) return '';
         return String(markup)
             .replace(/&/g, '&amp;')
@@ -20,18 +21,18 @@ module.exports = {
         var m = /\[object (\w+)\]/.exec(Object.prototype.toString.call(obj));
         return m ? m[1].toLowerCase() : '';
     },
-    keys: function (obj) {
+    keys: function(obj) {
         var keys = []
         if (!obj) return keys
         if (Object.keys) return Object.keys(obj)
-        this.objEach(obj, function (key) {
+        this.objEach(obj, function(key) {
             keys.push(key)
         })
         return keys
     },
-    bind: function (fn, ctx) {
+    bind: function(fn, ctx) {
         if (fn.bind) return fn.bind(ctx)
-        return function () {
+        return function() {
             return fn.apply(ctx, arguments)
         }
     },
@@ -48,17 +49,17 @@ module.exports = {
         }
         return obj;
     },
-    trim: function (str) {
+    trim: function(str) {
         if (str.trim) return str.trim()
         else {
             return str.replace(/^\s+|\s+$/gm, '')
         }
     },
-    indexOf: function (arr, tar) {
+    indexOf: function(arr, tar) {
         if (arr.indexOf) return arr.indexOf(tar)
         else {
             var i = -1
-            fns.some(arr, function (item, index) {
+            fns.some(arr, function(item, index) {
                 if (item === tar) {
                     i = index
                     return true
@@ -67,22 +68,22 @@ module.exports = {
             return i
         }
     },
-    forEach: function (arr, fn) {
+    forEach: function(arr, fn) {
         if (arr.forEach) return arr.forEach(fn)
         else {
             var len = arr.length
-            for (var i = 0 ; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 fn(arr[i], i)
             }
         }
         return arr
     },
-    some: function (arr, fn) {
+    some: function(arr, fn) {
         if (arr.some) return arr.some(fn)
         else {
             var len = arr.length
             var r = false
-            for (var i = 0 ; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 if (fn(arr[i], i)) {
                     r = true
                     break
@@ -91,22 +92,22 @@ module.exports = {
             return r
         }
     },
-    map: function (arr, fn) {
+    map: function(arr, fn) {
         if (arr.map) return arr.map(fn)
         else {
             var len = arr.length
             var next = []
-            for (var i = 0 ; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 next.push(fn(arr[i], i))
             }
             return next
         }
     },
-    objEach: function (obj, fn) {
+    objEach: function(obj, fn) {
         if (!obj) return
-        for(var key in obj) {
+        for (var key in obj) {
             if (hasOwn(obj, key)) {
-                if(fn(key, obj[key]) === false) break
+                if (fn(key, obj[key]) === false) break
             }
         }
     },
@@ -115,25 +116,52 @@ module.exports = {
         else {
             var len = arr.length
             var res = []
-            for(var i = 0; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 var val = arr[i]
-                if(fn.call(context, val, i, arr)) {
+                if (fn.call(context, val, i, arr)) {
                     res.push(val)
                 }
             }
             return res
         }
     },
+    reduce: function(arr, fn, opt_initialValue) {
+        if (arr.reduce) return arr.reduce(fn, opt_initialValue)
+        if ('function' !== typeof fn) {
+            throw new TypeError(fn + ' is not a function');
+        }
+        var index, value,
+            length = arr.length >>> 0,
+            isValueSet = false;
+        if (2 < arguments.length) {
+            value = opt_initialValue;
+            isValueSet = true;
+        }
+        for (index = 0; length > index; ++index) {
+            if (arr.hasOwnProperty(index)) {
+                if (isValueSet) {
+                    value = fn(value, arr[index], index, arr);
+                } else {
+                    value = arr[index];
+                    isValueSet = true;
+                }
+            }
+        }
+        if (!isValueSet) {
+            throw new TypeError('Reduce of empty array with no initial value');
+        }
+        return value;
+    },
     /**
      * Lock function before lock release
      */
     lock: function lock(fn) {
         var pending
-        return function () {
+        return function() {
             if (pending) return
             pending = true
             var args = [].slice.call(arguments, 0)
-            args.unshift(function () {
+            args.unshift(function() {
                 pending = false
             })
             fn.apply(this, args)
@@ -142,13 +170,13 @@ module.exports = {
     /**
      * Call only once
      */
-    once: function (cb/*[, ctx]*/) {
+    once: function(cb /*[, ctx]*/ ) {
         var args = arguments.length
         var called
-        return function () {
+        return function() {
             if (called || !cb) return
             called = true
-            return cb.apply(args.length >=2 ? args[1] : null, arguments)
+            return cb.apply(args.length >= 2 ? args[1] : null, arguments)
         }
     }
 }
