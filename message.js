@@ -1,6 +1,6 @@
 'use strict';
 
-var util = require('@tencent/fns')
+var util = require('./fns')
 var outdatedMsgs = {}
 
 function Message () {
