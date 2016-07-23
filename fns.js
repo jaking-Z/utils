@@ -171,7 +171,7 @@ module.exports = {
      * Call only once
      */
     once: function(cb /*[, ctx]*/ ) {
-        var args = arguments.length
+        var args = arguments
         var called
         return function() {
             if (called || !cb) return
